@@ -1,0 +1,3 @@
+[submodule "ledger"]
+	path = ledger
+	url = https://github.com/ledger/ledger

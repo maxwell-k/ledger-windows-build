@@ -61,21 +61,18 @@ directory as the repository root.*
 
     to build the library and remove the object files.
 
-#.  `Download <https://github.com/ledger/ledger/archive/master.zip>`_ and
-    extract `ledger-master`
+#.  `Download <https://github.com/ledger/ledger/>`_ ledger::
+
+        git submodule init
+        git submodule update
 
 #.  `Download <http://sourceforge.net/projects/utfcpp/files/
     utf8cpp_2x/Release%202.3.4/utf8_v2_3_4.zip/download>`__ and extract
-    `source` and `doc`, then at the command prompt, run::
-
-        move source ledger-master\lib\utfcpp
-        del /Q doc
-
-    to move it into the `ledger` build tree and delete the documentation
+    `source` into `ledger\lib\utfcpp`
 
 #.  At the command prompt, run the following to build `ledger.exe`::
 
-        cd ledger-master
+        cd ledger
         cmake ^
             -DCMAKE_BUILD_TYPE:STRING="Release" ^
             -DMPFR_LIB:FILEPATH="../../mpfr" ^
@@ -91,8 +88,8 @@ directory as the repository root.*
             -DBoost_USE_STATIC_LIBS:BOOL="1" ^
             -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /Zi /Ob0 /Od" ^
             -G "Visual Studio 11"
-        msbuild /p:Configuration=Release /p:OutDir=..\.. src\ledger.vcxproj
-        del /Q ..\ledger.lib
+        msbuild /p:Configuration=Release src\ledger.vcxproj
+        copy Release\ledger.exe ..\
 
 Notes
 =====
