@@ -1,0 +1,14 @@
+image: [Visual Studio 2017]
+
+install:
+  - git submodule update --init --recursive
+  - dir ledger
+  - dir mpir
+  - dir mpfr
+
+after_build:
+  - ledger --version
+# - ps: iex ((new-object net.webclient).DownloadString(('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')))
+
+on_finish:
+# - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString(('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')))
