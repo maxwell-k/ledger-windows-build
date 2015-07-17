@@ -1,0 +1,8 @@
+init:
+- ps: >
+    Start-FileDownload
+    'http://www.tortall.net/projects/yasm/releases/vsyasm-1.2.0-win32.zip'
+- ps: iex ((new-object net.webclient).DownloadString(('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')))
+
+on_finish:
+- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString(('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')))
