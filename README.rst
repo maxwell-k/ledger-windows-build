@@ -5,91 +5,100 @@ Build ledger on Windows
 Overview and versions
 =====================
 
-#.  Install `Visual Studio Express 2012
-    <http://www.microsoft.com/visualstudio/eng>`__
-#.  Install `CMake <http://www.cmake.org/>`__ 2.8.11
-#.  Install `Yasm <http://yasm.tortall.net/>`__ 1.2.0
-#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.53.0
-#.  Build `MPIR <http://mpir.org/>`__ 2.6.0
-#.  Build `MPFR <http://www.mpfr.org/mpfr-current/#download>`__ 3.1.2
-#.  Download and extract `ledger <http://ledger-cli.org/>`__ (master)
-#.  Download and extract `utfcpp <http://utfcpp.sourceforge.net/>`__ 2.3.4
-#.  Build `ledger`
+#.  Install `Guthub Desktop Windows 
+    <https://desktop.github.com/>`__
+#.  Install `Visual Studio Express 2015
+    <https://www.visualstudio.com/downloads/download-visual-studio-vs#d-express-windows-desktop>`__
+#.  Install `CMake <https://cmake.org/download/>`__ 3.5.0-rc1
+#.  Clone this repository
+#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.60.0
+#.  Build `MPIR <http://mpir.org/>`__ (master)
+#.  Build `MPFR <http://www.mpfr.org/mpfr-current/#download>`__ (master)
+#.  Build `ledger <http://ledger-cli.org/>`__ (master)
 
 Detail
 ======
 
-#.  `Download <http://www.microsoft.com/visualstudio/
-    eng/downloads#d-express-windows-desktop>`__, install and register Visual
-    Studio Express 2012 for Windows Desktop
+#.  `Download <https://github-windows.s3.amazonaws.com/GitHubSetup.exe>`__, install Guthub Desktop Windows
 
-#.  `Download <http://www.tortall.net/projects/
-    yasm/releases/vsyasm-1.2.0-win32.zip>`__ the Visual Studio version of
-    `yasm`, and extract everything except `readme.txt` into the system `PATH`,
-    for example into `C:\\Program Files (x86)\\Microsoft Visual Studio
-    11.0\\VC\\BIN`
+#.  `Download <https://go.microsoft.com/fwlink/?LinkId=691984>`__, install Visual
+    Studio Express 2015 for Windows Desktop
 
-#.  `Download <http://www.cmake.org/files/v2.8/cmake-2.8.11.1-win32-x86.exe>`__
+
+#.  `Download <https://cmake.org/files/v3.5/cmake-3.5.0-rc1-win32-x86.msi>`__
     and install CMake; adding it to the `PATH`
 
+#.  Run in Git shell:: 
+
+        git clone https://github.com/AndrewSav/ledger-windows-build.git --recursive
+
+  Make sure to double check the url in case of forked repo
+
 *In each step below choose to extract the package contents into the root of
-this repository. 'At the command prompt, run' means use the `VS2012 x86 Native
+this repository. 'At the command prompt, run' means use the `VS2015 x86 Native
 Tools Command Prompt` to execute the commands listed, starting with the current
 directory as the repository root.*
 
-4.  `Download <http://sourceforge.net/projects/boost/files/boost/1.53.0/
-    boost_1_53_0.zip/download>`__ and extract `boost_1_53_0`, then at the
+5.  `Download <http://sourceforge.net/projects/boost/files/boost/1.60.0/
+    boost_1_60_0.zip/download>`__ and extract `boost_1_60_0`, then at the
     command prompt, run::
 
-        cd boost_1_53_0
+        cd ..
+        ren boost_1_60_0 boost
+        cd boost
         .\bootstrap.bat
         .\b2.exe link=static runtime-link=static threading=multi ^
-            --layout-tagged
+           --layout=versioned
+   
+    Note that the ``boost`` folder should be at the same level as ``ledger-windows-build`` folder (sibling)
 
-#.  `Download <http://mpir.org/mpir-2.6.0.tar.bz2>`__ and extract `mpir-2.6.0`,
-    then at the command prompt, run::
+#.  At the command prompt, run::
 
-        cd mpir-2.6.0\win
-        .\configure.bat
-        .\make.bat
+        cd mpir\build.vc14
+        .\msbuild.bat gc LIB Win32 Release
 
-#.  `Download <http://www.mpfr.org/mpfr-current/mpfr-3.1.2.zip>`__ and extract
-    `mpfr-3.1.2`, then at the command prompt, run::
+#.  At the command prompt, run::
 
+        cd mpfr\build.vc14\lib_mpfr
         msbuild /p:Configuration=Release lib_mpfr.vcxproj
-        del /Q Release
-
-    to build the library and remove the object files.
-
-#.  `Download <https://github.com/ledger/ledger/>`_ ledger::
-
-        git submodule init
-        git submodule update
-
-#.  `Download <http://sourceforge.net/projects/utfcpp/files/
-    utf8cpp_2x/Release%202.3.4/utf8_v2_3_4.zip/download>`__ and extract
-    `source` into `ledger\lib\utfcpp`
 
 #.  At the command prompt, run the following to build `ledger.exe`::
 
         cd ledger
         cmake ^
             -DCMAKE_BUILD_TYPE:STRING="Release" ^
-            -DMPFR_LIB:FILEPATH="../../mpfr" ^
-            -DGMP_LIB:FILEPATH="../../mpir-2.6.0/win/mpir" ^
-            -DMPFR_PATH:PATH="../mpfr-3.1.2/src" ^
-            -DGMP_PATH:PATH="../mpir-2.6.0" ^
+            -DBUILD_LIBRARY=OFF ^
+            -DMPFR_LIB:FILEPATH="../../mpfr/build.vc14/lib/Win32/Release/mpfr" ^
+            -DGMP_LIB:FILEPATH="../../mpir/lib/win32/Release/mpir" ^
+            -DMPFR_PATH:PATH="../mpfr/lib/Win32/Release" ^
+            -DGMP_PATH:PATH="../mpir/lib/win32/Release" ^
             -DBUILD_DOCS:BOOL="0" ^
             -DHAVE_REALPATH:BOOL="0" ^
             -DHAVE_GETPWUID:BOOL="0" ^
             -DHAVE_GETPWNAM:BOOL="0" ^
+            -DHAVE_IOCTL:BOOL="0" ^
             -DHAVE_ISATTY:BOOL="0" ^
-            -DBOOST_ROOT:PATH="../boost_1_53_0/" ^
+            -DBOOST_ROOT:PATH="../../boost/" ^
             -DBoost_USE_STATIC_LIBS:BOOL="1" ^
             -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /Zi /Ob0 /Od" ^
-            -G "Visual Studio 11"
+            -G "Visual Studio 14"
         msbuild /p:Configuration=Release src\ledger.vcxproj
         copy Release\ledger.exe ..\
+
+Updating to a later version of ledger/mpir/mpfr
+===============================================
+
+Run these commands from Git shell to update pull a later commit of ledger/mpir/mpfr to build off::
+
+    cd ledger
+    git checkout master
+    cd ../mpir
+    git checkout master
+    cd ../mpfr
+    git checkout master
+
+Note, you can use any appropirate branch or commit number instead of ``master``. You might need to fix the build process after executing the above if it breaks.
+
 
 Notes
 =====
@@ -97,38 +106,12 @@ Notes
 -   These instructions are based upon the `wiki page
     <https://github.com/ledger/ledger/wiki/
     Build-instructions-for-Microsoft-Visual-C---11-(2012)>`__ by Tim Crews
--   The Visual Studio project file for `mpfr` is based on the version provided
-    by `Brian Gladman
-    <http://gladman.plushost.co.uk/oldsite/computing/gmp4win.php>`__
 -   Boost is time consuming to build, especially as we have to build all of
     the libraries to build the unit test framework; the other libraries can be
     built at the same time
 
-Future ideas
-============
-
--   Build tests without errors, including for example::
-
-        msbuild /p:Configuration=Release ALL_BUILD.vcxproj
-
--   Build `python` bindings
-
--   Display Unicode output correctly on the terminal
-
 Licenses
 ========
-
-Yasm
-----
-
-::
-
-    Libyasm is 2-clause or 3-clause BSD licensed, with the exception of
-    bitvect, which is triple-licensed under the Artistic license, GPL, and
-    LGPL. Libyasm is thus GPL and LGPL compatible.  In addition, this also
-    means that libyasm is free for binary-only distribution as long as theterms
-    of the 3-clause BSD license and Artistic license (as it applies tobitvect)
-    are fulfilled.
 
 Boost
 -----
@@ -222,34 +205,5 @@ Ledger
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-utfcpp
-------
-
-::
-
-    Copyright 2006 Nemanja Trifunovic
-
-    Permission is hereby granted, free of charge, to any person or organization
-    obtaining a copy of the software and accompanying documentation covered by
-    this license (the "Software") to use, reproduce, display, distribute,
-    execute, and transmit the Software, and to prepare derivative works of the
-    Software, and to permit third-parties to whom the Software is furnished to
-    do so, all subject to the following:
-
-    The copyright notices in the Software and this entire statement, including
-    the above license grant, this restriction and the following disclaimer,
-    must be included in all copies of the Software, in whole or in part, and
-    all derivative works of the Software, unless such copies or derivative
-    works are solely in the form of machine-executable object code generated by
-    a source language processor.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
-    SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE
-    FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
-    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-    DEALINGS IN THE SOFTWARE.
 
 .. vim: ft=rst
