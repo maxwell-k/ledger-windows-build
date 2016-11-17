@@ -9,9 +9,9 @@ Overview and versions
     <https://desktop.github.com/>`__
 #.  Install `Visual Studio Express 2015
     <https://www.visualstudio.com/downloads/download-visual-studio-vs#d-express-windows-desktop>`__
-#.  Install `CMake <https://cmake.org/download/>`__ 3.5.0-rc1
+#.  Install `CMake <https://cmake.org/download/>`__ 3.7.0
 #.  Clone this repository
-#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.60.0
+#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.62.0
 #.  Build `MPIR <http://mpir.org/>`__ (master)
 #.  Build `MPFR <http://www.mpfr.org/mpfr-current/#download>`__ (master)
 #.  Build `ledger <http://ledger-cli.org/>`__ (master)
@@ -25,7 +25,7 @@ Detail
     Studio Express 2015 for Windows Desktop
 
 
-#.  `Download <https://cmake.org/files/v3.5/cmake-3.5.0-rc1-win32-x86.msi>`__
+#.  `Download <https://cmake.org/files/v3.7/cmake-3.7.0-win32-x86.msi>`__
     and install CMake; adding it to the `PATH`
 
 #.  Run in Git shell:: 
@@ -39,12 +39,12 @@ this repository. 'At the command prompt, run' means use the `VS2015 x86 Native
 Tools Command Prompt` to execute the commands listed, starting with the current
 directory as the repository root.*
 
-5.  `Download <http://sourceforge.net/projects/boost/files/boost/1.60.0/
-    boost_1_60_0.zip/download>`__ and extract `boost_1_60_0`, then at the
+5.  `Download <http://sourceforge.net/projects/boost/files/boost/1.62.0/
+    boost_1_62_0.zip/download>`__ and extract `boost_1_60_0`, then at the
     command prompt, run::
 
         cd ..
-        ren boost_1_60_0 boost
+        ren boost_1_62_0 boost
         cd boost
         .\bootstrap.bat
         .\b2.exe link=static runtime-link=static threading=multi ^
@@ -84,6 +84,9 @@ directory as the repository root.*
             -G "Visual Studio 14"
         msbuild /p:Configuration=Release src\ledger.vcxproj
         copy Release\ledger.exe ..\
+
+    Note that the error message about not being able to find Python can be safely ignored. Python is only used for running tests, which is not part of the process described here
+
 
 Updating to a later version of ledger/mpir/mpfr
 ===============================================
