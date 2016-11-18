@@ -40,7 +40,7 @@ Tools Command Prompt` to execute the commands listed, starting with the current
 directory as the repository root.*
 
 5.  `Download <http://sourceforge.net/projects/boost/files/boost/1.62.0/
-    boost_1_62_0.zip/download>`__ and extract `boost_1_60_0`, then at the
+    boost_1_62_0.zip/download>`__ and extract `boost_1_62_0`, then at the
     command prompt, run::
 
         cd ..
