@@ -5,13 +5,11 @@ Build ledger on Windows
 Overview and versions
 =====================
 
-#.  Install `Guthub Desktop Windows 
-    <https://desktop.github.com/>`__
-#.  Install `Visual Studio Express 2015
-    <https://www.visualstudio.com/downloads/download-visual-studio-vs#d-express-windows-desktop>`__
-#.  Install `CMake <https://cmake.org/download/>`__ 3.7.0
+#.  Install `Visual Studio Community 2017
+    <https://www.visualstudio.com/downloads/>`__
+#.  Install `CMake <https://cmake.org/download/>`__ 3.9.6
 #.  Clone this repository
-#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.62.0
+#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.65.1
 #.  Build `MPIR <http://mpir.org/>`__ (master)
 #.  Build `MPFR <http://www.mpfr.org/mpfr-current/#download>`__ (master)
 #.  Build `ledger <http://ledger-cli.org/>`__ (master)
@@ -19,13 +17,10 @@ Overview and versions
 Detail
 ======
 
-#.  `Download <https://github-windows.s3.amazonaws.com/GitHubSetup.exe>`__, install Guthub Desktop Windows
+#.  `Download <https://www.visualstudio.com/thank-you-downloading-visual-studio/?sku=Community&rel=15>`__, install Visual
+    Studio Community 2017
 
-#.  `Download <https://go.microsoft.com/fwlink/?LinkId=691984>`__, install Visual
-    Studio Express 2015 for Windows Desktop
-
-
-#.  `Download <https://cmake.org/files/v3.7/cmake-3.7.0-win32-x86.msi>`__
+#.  `Download <https://cmake.org/files/v3.9/cmake-3.9.6-win64-x64.msi>`__
     and install CMake; adding it to the `PATH`
 
 #.  Run in Git shell:: 
@@ -35,16 +30,15 @@ Detail
   Make sure to double check the url in case of forked repo
 
 *In each step below choose to extract the package contents into the root of
-this repository. 'At the command prompt, run' means use the `VS2015 x86 Native
-Tools Command Prompt` to execute the commands listed, starting with the current
+this repository. 'At the command prompt, run' means use the `Developer Command
+Prompt for VS 2017` to execute the commands listed, starting with the current
 directory as the repository root.*
 
-5.  `Download <http://sourceforge.net/projects/boost/files/boost/1.62.0/
-    boost_1_62_0.zip/download>`__ and extract `boost_1_62_0`, then at the
+5.  `Download <https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.zip>`__ and extract `boost_1_65_1`, then at the
     command prompt, run::
 
         cd ..
-        ren boost_1_62_0 boost
+        ren boost_1_65_1 boost
         cd boost
         .\bootstrap.bat
         .\b2.exe link=static runtime-link=static threading=multi ^
@@ -54,12 +48,12 @@ directory as the repository root.*
 
 #.  At the command prompt, run::
 
-        cd mpir\build.vc14
+        cd mpir\build.vc15
         .\msbuild.bat gc LIB Win32 Release
 
 #.  At the command prompt, run::
 
-        cd mpfr\build.vc14\lib_mpfr
+        cd mpfr\build.vc15\lib_mpfr
         msbuild /p:Configuration=Release lib_mpfr.vcxproj
 
 #.  At the command prompt, run the following to build `ledger.exe`::
@@ -68,7 +62,7 @@ directory as the repository root.*
         cmake ^
             -DCMAKE_BUILD_TYPE:STRING="Release" ^
             -DBUILD_LIBRARY=OFF ^
-            -DMPFR_LIB:FILEPATH="../../mpfr/build.vc14/lib/Win32/Release/mpfr" ^
+            -DMPFR_LIB:FILEPATH="../../mpfr/build.vc15/lib/Win32/Release/mpfr" ^
             -DGMP_LIB:FILEPATH="../../mpir/lib/win32/Release/mpir" ^
             -DMPFR_PATH:PATH="../mpfr/lib/Win32/Release" ^
             -DGMP_PATH:PATH="../mpir/lib/win32/Release" ^
@@ -81,7 +75,7 @@ directory as the repository root.*
             -DBOOST_ROOT:PATH="../../boost/" ^
             -DBoost_USE_STATIC_LIBS:BOOL="1" ^
             -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /Zi /Ob0 /Od" ^
-            -G "Visual Studio 14"
+            -G "Visual Studio 15"
         msbuild /p:Configuration=Release src\ledger.vcxproj
         copy Release\ledger.exe ..\
 
