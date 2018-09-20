@@ -55,6 +55,12 @@ current directory as the repository root.*
         cd mpir\msvc\vs17
         .\msbuild.bat gc LIB Win32 Release
 
+    .. note::
+        For unknown reasons, possible due to a subtle environment variables bug
+        in the build script the last command may fail on first and second attempt.
+        It ususally work afterwards.
+
+
 #.  At the command prompt run the following to build `mpfr`::
 
         cd mpfr\build.vc15\lib_mpfr
