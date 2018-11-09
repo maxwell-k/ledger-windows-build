@@ -10,10 +10,10 @@ on ``$PATH``.*
 
 #.  Install `Visual Studio Community 2017 <https://www.visualstudio.com/
     downloads/>`__
-#.  Install `CMake <https://cmake.org/download/>`__ 3.9.6
+#.  Install `CMake <https://cmake.org/download/>`__ 3.12.2
 #.  Clone `this repository <https://github.com/maxwell-k/
     ledger-windows-build/>`__
-#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.65.1
+#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.68.0
 #.  Build `MPIR <http://mpir.org/>`__ (master)
 #.  Build `MPFR <http://www.mpfr.org/mpfr-current/#download>`__ (master)
 #.  Build `ledger <http://ledger-cli.org/>`__ (master)
@@ -25,7 +25,7 @@ Detail
     thank-you-downloading-visual-studio/?sku=Community&rel=15>`__, install
     Visual Studio Community 2017
 
-#.  `Download <https://cmake.org/files/v3.9/cmake-3.9.6-win64-x64.msi>`__
+#.  `Download <https://cmake.org/files/v3.12/cmake-3.12.2-win64-x64.msi>`__
     and install CMake; adding it to the `PATH`
 
 *In the steps below 'at the command prompt' means use the `Developer
@@ -40,11 +40,11 @@ current directory as the repository root.*
     Use a different URL above if you are using a fork of the original
     instructions.
 
-#.  `Download <https://dl.bintray.com/boostorg/release/1.65.1/source/
-    boost_1_65_1.zip>`__ and extract ``boost_1_65_1`` to the root of this
+#.  `Download <https://dl.bintray.com/boostorg/release/1.68.0/source/
+    boost_1_68_0.zip>`__ and extract ``boost_1_68_0`` to the root of this
     repository, then build Boost using the following at the command prompt::
 
-        ren boost_1_65_1 boost
+        ren boost_1_68_0 boost
         cd boost
         .\bootstrap.bat
         .\b2.exe link=static runtime-link=static threading=multi ^
@@ -52,8 +52,14 @@ current directory as the repository root.*
 
 #.  At the command prompt run the following to build `mpir`::
 
-        cd mpir\build.vc15
+        cd mpir\msvc\vs17
         .\msbuild.bat gc LIB Win32 Release
+
+    .. note::
+
+        For unknown reasons, possibly due to a subtle bug in the build script
+        the last command may fail on the first two attempts. It ususally works
+        at the third attempt or later.
 
 #.  At the command prompt run the following to build `mpfr`::
 
