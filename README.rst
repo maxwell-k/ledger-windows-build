@@ -56,10 +56,10 @@ current directory as the repository root.*
         .\msbuild.bat gc LIB Win32 Release
 
     .. note::
-        For unknown reasons, possible due to a subtle environment variables bug
-        in the build script the last command may fail on first and second attempt.
-        It ususally work afterwards.
 
+        For unknown reasons, possibly due to a subtle bug in the build script
+        the last command may fail on the first two attempts. It ususally works
+        at the third attempt or later.
 
 #.  At the command prompt run the following to build `mpfr`::
 
