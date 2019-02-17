@@ -13,7 +13,7 @@ on ``$PATH``.*
 #.  Install `CMake <https://cmake.org/download/>`__ 3.12.2
 #.  Clone `this repository <https://github.com/maxwell-k/
     ledger-windows-build/>`__
-#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.68.0
+#.  Build `Boost <http://www.boost.org/users/download/>`__ 1.69.0
 #.  Build `MPIR <http://mpir.org/>`__ (master)
 #.  Build `MPFR <http://www.mpfr.org/mpfr-current/#download>`__ (master)
 #.  Build `ledger <http://ledger-cli.org/>`__ (master)
