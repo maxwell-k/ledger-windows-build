@@ -40,11 +40,11 @@ current directory as the repository root.*
     Use a different URL above if you are using a fork of the original
     instructions.
 
-#.  `Download <https://dl.bintray.com/boostorg/release/1.68.0/source/
-    boost_1_68_0.zip>`__ and extract ``boost_1_68_0`` to the root of this
+#.  `Download <https://dl.bintray.com/boostorg/release/1.69.0/source/
+    boost_1_69_0.zip>`__ and extract ``boost_1_69_0`` to the root of this
     repository, then build Boost using the following at the command prompt::
 
-        ren boost_1_68_0 boost
+        ren boost_1_69_0 boost
         cd boost
         .\bootstrap.bat
         .\b2.exe link=static runtime-link=static threading=multi ^
