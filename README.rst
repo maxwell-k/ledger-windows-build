@@ -59,7 +59,9 @@ current directory as the repository root.*
         .\b2.exe link=static runtime-link=static threading=multi ^
            --layout=versioned
 
-
+    Boost is time consuming to build, especially as we have to build all of
+    the libraries to build the unit test framework; the other libraries can be
+    built at the same time.
 
 #.  Patch build files for `mpir`:
     On lines 22 and 23 of `mpir\msvc\vs19\msbuild.bat` change `15.0` to `Current`.
@@ -132,15 +134,12 @@ clone`` above::
     any appropriate branch or commit hash in place of ``master``. Other
     versions may require a different build process to that documented above.
 
-Notes
-=====
+Thanks
+======
 
 -   These instructions are based upon the `wiki page
     <https://github.com/ledger/ledger/wiki/
     Build-instructions-for-Microsoft-Visual-C---11-(2012)>`__ by Tim Crews.
--   Boost is time consuming to build, especially as we have to build all of
-    the libraries to build the unit test framework; the other libraries can be
-    built at the same time.
 -   Thanks to `Andrew Savinykh <https://github.com/AndrewSav>`__ for recent
     updates.
 
