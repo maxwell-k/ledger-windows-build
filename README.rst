@@ -3,6 +3,7 @@ Build ledger on Windows
 =======================
 
 :Syntax checks: |drone|_
+:Build: |appveyor|_
 
 Overview and versions
 =====================
@@ -240,5 +241,10 @@ Ledger
         ledger-windows-build/status.svg
    :alt: Drone CI cloud build status
 .. _drone: https://cloud.drone.io/maxwell-k/ledger-windows-build
+
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/\
+        r8nsgi50ko84njvy?svg=true
+    :alt: Appveyor build status
+.. _appveyor: https://ci.appveyor.com/project/maxwell-k/ledger-windows-build/
 
 .. vim: ft=rst
