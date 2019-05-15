@@ -2,6 +2,8 @@
 Build ledger on Windows
 =======================
 
+:Syntax checks: |drone|_
+
 Overview and versions
 =====================
 
@@ -136,6 +138,8 @@ Notes
 -   Thanks to `Andrew Savinykh <https://github.com/AndrewSav>`__ for recent
     updates.
 
+
+
 Licenses
 ========
 
@@ -231,5 +235,10 @@ Ledger
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
+
+.. |drone| image:: https://cloud.drone.io/api/badges/maxwell-k/\
+        ledger-windows-build/status.svg
+   :alt: Drone CI cloud build status
+.. _drone: https://cloud.drone.io/maxwell-k/ledger-windows-build
 
 .. vim: ft=rst
