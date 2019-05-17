@@ -64,8 +64,10 @@ current directory as the repository root.*
     built at the same time.
 
 #.  Patch build files for `mpir`:
-    On lines 22 and 23 of `mpir\msvc\vs19\msbuild.bat` change `15.0` to `Current`.
-    On lines 76 and 85 of `mpir\msvc\vs19\lib_mpir_gc\lib_mpir_gc.vcxproj` change `17` to `19`
+
+    -   On lines 22 and 23 of `mpir\msvc\vs19\msbuild.bat` change `15.0` to
+        `Current`. On lines 76 and 85 of
+    -   `mpir\msvc\vs19\lib_mpir_gc\lib_mpir_gc.vcxproj` change `17` to `19`.
 
 #.  At the command prompt run the following to build `mpir`::
 
