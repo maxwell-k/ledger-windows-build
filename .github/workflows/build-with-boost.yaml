@@ -1,0 +1,88 @@
+﻿name: "Build with boost"
+on:
+  push:
+    branches:
+    - bogus
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+    - name: "Add msbuild to PATH"
+      uses: microsoft/setup-msbuild@v1.0.0
+    - name: "Set Target Boost Version"
+      shell: powershell
+      run: |
+        Write-Output "::set-env name=boost_version_major::1"
+        Write-Output "::set-env name=boost_version_minor::72"
+        Write-Output "::set-env name=boost_version_patch::0"
+    - name: "Transform Target Boost Version"
+      shell: powershell
+      run: |
+        Write-Output "::set-env name=boost_version_dot::$($env:boost_version_major).$($env:boost_version_minor).$($env:boost_version_patch)"
+        Write-Output "::set-env name=boost_version_underscore::$($env:boost_version_major)_$($env:boost_version_minor)_$($env:boost_version_patch)"
+    - name: "Checkout sources"
+      uses: actions/checkout@v2
+    - name: "Checkout submodules"
+      shell: powershell
+      run: |
+        git -c protocol.version=2 submodule update --init --force --recursive --depth=1
+    - name: "Hide cached Boost"
+      shell: powershell
+      run: |
+        mi C:\hostedtoolcache\windows\Boost C:\hostedtoolcache\windows\deleteme
+    - name: "Download boost"
+      shell: powershell
+      run: |
+        curl.exe -sSLfO "https://dl.bintray.com/boostorg/release/$($env:boost_version_dot)/source/boost_$($env:boost_version_underscore).7z"
+    - name: "Extract boost"
+      shell: powershell
+      run: |
+        7z x ".\boost_$($env:boost_version_underscore).7z"
+        mi "boost_$($env:boost_version_underscore)" boost
+    - name: "Compile boost"
+      shell: powershell
+      run: |
+        cd boost
+        .\bootstrap.bat
+        .\b2.exe link=static runtime-link=static threading=multi --layout=versioned
+    - name: "Compile mpir"
+      shell: powershell
+      run: |
+        cd mpir\msvc\vs19
+        $env:vsw_exe="`"$(${env:ProgramFiles(x86)})\Microsoft Visual Studio\Installer\vswhere.exe`""
+        $env:InstallDir="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"
+        $env:msbuild_subdir="Current"
+        .\msbuild.bat gc LIB Win32 Release
+    - name: "Compile mpfr"
+      shell: powershell
+      run: |
+        cd mpfr\build.vs19\lib_mpfr
+        msbuild /p:Configuration=Release lib_mpfr.vcxproj
+    - name: "Compile ledger"
+      shell: powershell
+      run: |
+        cd ledger
+        cmd /c cmake `
+          -DCMAKE_BUILD_TYPE:STRING="Release" `
+          -DBUILD_LIBRARY=OFF `
+          -DMPFR_LIB:FILEPATH="../../mpfr/build.vs19/lib/Win32/Release/mpfr" `
+          -DGMP_LIB:FILEPATH="../../mpir/lib/win32/Release/mpir" `
+          -DMPFR_PATH:PATH="../mpfr/lib/Win32/Release" `
+          -DGMP_PATH:PATH="../mpir/lib/win32/Release" `
+          -DBUILD_DOCS:BOOL="0" `
+          -DHAVE_REALPATH:BOOL="0" `
+          -DHAVE_GETPWUID:BOOL="0" `
+          -DHAVE_GETPWNAM:BOOL="0" `
+          -DHAVE_IOCTL:BOOL="0" `
+          -DHAVE_ISATTY:BOOL="0" `
+          -DBOOST_ROOT:PATH="../boost/" `
+          -DBoost_USE_STATIC_LIBS:BOOL="1" `
+          -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /Zi /Ob0 /Od" `
+          -A Win32 `
+          -G "Visual Studio 16"
+        msbuild /p:Configuration=Release src\ledger.vcxproj
+    - name: "Upload artifact"
+      uses: actions/upload-artifact@v1
+      with:
+        name: ledger
+        path: ledger\Release
