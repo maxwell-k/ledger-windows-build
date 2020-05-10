@@ -3,7 +3,7 @@ pull_requests:
   do_not_increment_build_number: true
 skip_tags: true
 skip_branch_with_pr: true
-image: Visual Studio 2017
+image: Visual Studio 2019
 platform: x86
 
 install:
@@ -22,16 +22,16 @@ install:
     .\bootstrap.bat
     .\b2.exe link=static runtime-link=static threading=multi --layout=versioned
 
-    cd %APPVEYOR_BUILD_FOLDER%\mpir\msvc\vs15
+    cd %APPVEYOR_BUILD_FOLDER%\mpir\msvc\vs19
     .\msbuild.bat gc LIB Win32 Release
 
-    cd %APPVEYOR_BUILD_FOLDER%\mpfr\build.vc15\lib_mpfr
+    cd %APPVEYOR_BUILD_FOLDER%\mpfr\build.vs19\lib_mpfr
     msbuild /p:Configuration=Release lib_mpfr.vcxproj
 
     cd %APPVEYOR_BUILD_FOLDER%\ledger
     git checkout v3.2.0
 
-    cmake . -DCMAKE_BUILD_TYPE:STRING="Release" -DBUILD_LIBRARY=OFF -DMPFR_LIB:FILEPATH="../../mpfr/build.vc15/lib/Win32/Release/mpfr" -DGMP_LIB:FILEPATH="../../mpir/lib/win32/Release/mpir" -DMPFR_PATH:PATH="../mpfr/lib/Win32/Release" -DGMP_PATH:PATH="../mpir/lib/win32/Release" -DBUILD_DOCS:BOOL="0" -DHAVE_REALPATH:BOOL="0" -DHAVE_GETPWUID:BOOL="0" -DHAVE_GETPWNAM:BOOL="0" -DHAVE_IOCTL:BOOL="0" -DHAVE_ISATTY:BOOL="0" -DBOOST_ROOT:PATH="../boost/" -DBoost_USE_STATIC_LIBS:BOOL="1" -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /Zi /Ob0 /Od" -G "Visual Studio 15"
+    cmake . -DCMAKE_BUILD_TYPE:STRING="Release" -DBUILD_LIBRARY=OFF -DMPFR_LIB:FILEPATH="../../mpfr/build.vs19/lib/Win32/Release/mpfr" -DGMP_LIB:FILEPATH="../../mpir/lib/win32/Release/mpir" -DMPFR_PATH:PATH="../mpfr/lib/Win32/Release" -DGMP_PATH:PATH="../mpir/lib/win32/Release" -DBUILD_DOCS:BOOL="0" -DHAVE_REALPATH:BOOL="0" -DHAVE_GETPWUID:BOOL="0" -DHAVE_GETPWNAM:BOOL="0" -DHAVE_IOCTL:BOOL="0" -DHAVE_ISATTY:BOOL="0" -DBOOST_ROOT:PATH="../boost/" -DBoost_USE_STATIC_LIBS:BOOL="1" -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /Zi /Ob0 /Od" -G "Visual Studio 19"
 
     msbuild /p:Configuration=Release src\ledger.vcxproj
 
