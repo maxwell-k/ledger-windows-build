@@ -45,6 +45,8 @@ In order to kick off a new releases follow these steps:
 
   *<u>Note</u>, that you have to replace `<tag>` above with tag, branch or commit number of the ledger repository commit you would like to build.*
 
+  *<u>Note</u>, that the above only works on a fresh `clone`, if you cloned this repo some time ago you will also have to `git pull` in each submodule directory.*
+
   *<u>Note</u>, that other commits of those three submodules  than those in this repository may require a different build process.*
 
 - Commit your changes, push the commit, tag it and push the tag:
@@ -55,7 +57,6 @@ In order to kick off a new releases follow these steps:
   git tag <tag>
   git push origin --tags
   ```
-  
 
 At this point, the GitHub Actions will kick in and you will be able to watch it build, on the Actions tab of this repo. When the build succeeds a release will be created automatically corresponding to the tag name you specified above.
 
