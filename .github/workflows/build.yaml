@@ -1,0 +1,61 @@
+﻿name: "Build"
+on:
+  push:
+    tags:
+    - '*'
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+    - name: Get the tag
+      shell: powershell
+      id: get_tag
+      run: |
+        "::set-output name=TAG::$($env:GITHUB_REF.replace('refs/tags/',''))"
+    - name: Skip boost download
+      shell: powershell
+      run: |
+        echo "BOOST_SKIP=True" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "BOOST_ROOT=$env:BOOST_ROOT_1_72_0" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+    - name: "Add msbuild to PATH"
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: "Checkout sources"
+      uses: actions/checkout@v2
+    - name: "Checkout submodules"
+      shell: powershell
+      run: |
+        git -c protocol.version=2 submodule update --init --force --recursive --depth=1
+    - name: "Run build script"
+      shell: powershell
+      run: |
+        .\build.ps1
+    - name: "Upload artifact"
+      uses: actions/upload-artifact@v1
+      with:
+        name: ledger
+        path: ledger\Release
+    - name: "Create release archive"
+      shell: powershell
+      run: |
+        7z a "ledger-$env:TAG.zip" .\ledger\Release\ledger.exe
+      env:
+        TAG: ${{ steps.get_tag.outputs.TAG }}
+    - name: "Create Release"
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_tag.outputs.TAG }}
+        release_name: Release ${{ steps.get_tag.outputs.TAG }}
+        draft: false
+        prerelease: false
+    - name: "Upload Release Asset"
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ledger-${{ steps.get_tag.outputs.TAG }}.zip
+        asset_name: ledger-${{ steps.get_tag.outputs.TAG }}.zip
+        asset_content_type: application/zip
