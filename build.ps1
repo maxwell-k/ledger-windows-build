@@ -211,7 +211,8 @@ if (!$env:BOOST_SKIP) {
     }
 
     "Downloading boost..." | Write-Host
-    curl.exe -LfO "https://dl.bintray.com/boostorg/release/$($env:boost_version_dot)/source/$bustFileName"
+    curl.exe -LfO "https://boostorg.jfrog.io/artifactory/main/release/$($env:boost_version_dot)/source/$bustFileName"
+
 
     "Extracting boost..." | Write-Host
     7z x ".\boost_$($env:boost_version_underscore).7z"

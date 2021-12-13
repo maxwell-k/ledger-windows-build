@@ -33,7 +33,7 @@ jobs:
     - name: "Download boost"
       shell: powershell
       run: |
-        curl.exe -sSLfO "https://dl.bintray.com/boostorg/release/$($env:boost_version_dot)/source/boost_$($env:boost_version_underscore).7z"
+        curl.exe -sSLfO "https://boostorg.jfrog.io/artifactory/main/release/$($env:boost_version_dot)/source/boost_$($env:boost_version_underscore).7z"
     - name: "Extract boost"
       shell: powershell
       run: |
