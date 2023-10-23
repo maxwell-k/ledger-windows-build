@@ -8,13 +8,13 @@ Three ways to build ledger on Windows are presented in this directory. All the s
 
 The steps to compile ledger that the three ways mentioned above execute are:
 
-1. Install [Visual Studio 2019](https://www.visualstudio.com/downloads/). GitHub Actions use Visual Studio Enterprise. The PowerShell script and the Hard Way were tested on the Community Edition, but should work with other editions too.
-2. Install [CMake](https://cmake.org/download/) 3.22.1 was tested for manual installs. Actions use their own current version.
+1. Install [Visual Studio 2022](https://www.visualstudio.com/downloads/). GitHub Actions use Visual Studio Enterprise. The PowerShell script and the Hard Way were tested on the Community Edition, but should work with other editions too.
+2. Install [CMake](https://cmake.org/download/) 3.27.7 was tested for manual installs. Actions use their own current version.
 3. Clone [this repository](https://github.com/andrewsav/ledger-windows-build)
-4. Build [Boost](http://www.boost.org/users/download/) 1.72.0
+4. Build [Boost](http://www.boost.org/users/download/) 1.83.0
 5. Build [MPIR](http://mpir.org/) (master)
 6. Build [MPFR](http://www.mpfr.org/mpfr-current/#download) (master)
-7. Build [ledger](http://ledger-cli.org/) (master)
+7. Build [ledger](http://ledger-cli.org/) (v3.2.2)
 
 ## Automated Build with GitHub Actions
 
@@ -63,15 +63,15 @@ At this point, the GitHub Actions will kick in and you will be able to watch it 
 
 ## Prerequisites for manual build
 
-These instructions were tested on **Windows 10**. They may also work on other flavors of Windows as long the software below is installed. Visual Studio 2019 cannot be installed on some older versions of Windows.
+These instructions were tested on **Windows 11**. They may also work on other flavors of Windows as long the software below is installed. Visual Studio 2022 cannot be installed on some older versions of Windows.
 
-- [Download](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=16), install Visual Studio Community 2019. When installing make sure to install "Desktop development with C++" payload and "Git for Windows" component. Make sure that `git` is available on your `PATH`.
+- [Download](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&passive=false&cid=2030), install Visual Studio Community 2022. When installing make sure to install "Desktop development with C++" payload and "Git for Windows" component. Make sure that `git` is available on your `PATH`. 
 
-- [Download](https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-windows-x86_64.msi) and install CMake; adding it to the `PATH`
+- [Download](https://github.com/Kitware/CMake/releases/download/v3.27.7/cmake-3.27.7-windows-x86_64.msi) and install CMake; adding it to the `PATH`
 
-- If you are using up-to-date Windows 10, you most likely already have `curl.exe` on your path. If not, [download](https://curl.haxx.se/windows/) it and put on your path.
+- If you are using up-to-date Windows 11, you most likely already have `curl.exe` on your path. If not, [download](https://curl.haxx.se/windows/) it and put on your path.
 
-  *<u>Note:</u> these instructions were tested with curl.exe that comes with Windows 10.*
+  *<u>Note:</u> these instructions were tested with curl.exe that comes with Windows 11.*
 
   *<u>Note:</u> PowerShell has alias `curl` which is different from `curl.exe` when you check if you have curl, make sure that you are checking for `curl.exe`, not for `curl` alias.*
 
@@ -97,9 +97,9 @@ The build time can be an hour or more, depending on your machine. If there was n
 
 ## Building Ledger the Hard Way
 
-*In the steps below 'at the command prompt' means use the `Developer PowerShell for VS 2019` to execute the commands listed, starting with the current directory as the repository root.*
+*In the steps below 'at the command prompt' means use the `Developer PowerShell for VS 2022` to execute the commands listed, starting with the current directory as the repository root.*
 
-[Download](https://boostorg.jfrog.io/artifactory/main/release/1.72.0/source/boost_1_72_0.zip) and extract `boost_1_72_0` to the root of this repository, then build Boost using the following at the command prompt::
+[Download](https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.zip) and extract `boost_1_83_0` to the root of this repository, then build Boost using the following at the command prompt::
 
 ```powershell
 mv boost_1_72_0 boost
@@ -111,14 +111,14 @@ cd ..
 
 At the command prompt run the following to build `mpir`:
 
-    cd mpir\msvc\vs19
+    cd mpir\msvc\vs22
     msbuild.exe /p:Platform=win32 /p:Configuration=Release .\lib_mpir_gc\lib_mpir_gc.vcxproj
     msbuild.exe /p:Platform=win32 /p:Configuration=Release .\lib_mpir_cxx\lib_mpir_cxx.vcxproj
     cd ..\..\..
 
 At the command prompt run the following to build `mpfr`:
 
-    cd mpfr\build.vs19\lib_mpfr
+    cd mpfr\build.vs22\lib_mpfr
     msbuild /p:Configuration=Release lib_mpfr.vcxproj
     cd ..\..\..
 
@@ -128,7 +128,7 @@ At the command prompt run the following to build ``ledger.exe``:
     cmake `
       '-DCMAKE_BUILD_TYPE:STRING=Release' `
       '-DBUILD_LIBRARY=OFF' `
-      '-DMPFR_LIB:FILEPATH=../../mpfr/build.vs19/lib/Win32/Release/mpfr' `
+      '-DMPFR_LIB:FILEPATH=../../mpfr/build.vs22/lib/Win32/Release/mpfr' `
       '-DGMP_LIB:FILEPATH=../../mpir/lib/win32/Release/mpir' `
       '-DMPFR_PATH:PATH=../mpfr/lib/Win32/Release' `
       '-DGMP_PATH:PATH=../mpir/lib/win32/Release' `
@@ -142,7 +142,7 @@ At the command prompt run the following to build ``ledger.exe``:
       '-DBoost_USE_STATIC_RUNTIME:BOOL=1' `
       '-DCMAKE_CXX_FLAGS_RELEASE:STRING=/MT /Zi /Ob0 /Od' `
       -A Win32 `
-      -G "Visual Studio 16"
+      -G "Visual Studio 17"
     msbuild /p:Configuration=Release src\ledger.vcxproj
     cd ..
     cp ledger\Release\ledger.exe ledger.exe
@@ -163,21 +163,21 @@ You should now have `ledger.exe` at your current folder in the root of the clone
 ### MPIR
 
     Copyright 1991, 1996, 1999, 2000 Free Software Foundation, Inc.
-
+    
     Copyright 2008, 2009 William Hart
-
+    
     This file is part of the MPIR Library.
-
+    
     The MPIR Library is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation; either version 3 of the License, or (at your
     option) any later version.
-
+    
     The MPIR Library is distributed in the hope that it will be useful, but
     WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
     or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
     License for more details.
-
+    
     You should have received a copy of the GNU Lesser General Public License
     along with the MPIR Library; see the file COPYING.LIB.  If not, write to
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
@@ -187,19 +187,19 @@ You should now have `ledger.exe` at your current folder in the root of the clone
 
     Copyright 2000-2021 Free Software Foundation, Inc.
     Contributed by the AriC and Caramba projects, INRIA.
-
+    
     This file is part of the GNU MPFR Library.
-
+    
     The GNU MPFR Library is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation; either version 3 of the License, or (at your
     option) any later version.
-
+    
     The GNU MPFR Library is distributed in the hope that it will be useful, but
     WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
     or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
     License for more details.
-
+    
     You should have received a copy of the GNU Lesser General Public License
     along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
     https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,

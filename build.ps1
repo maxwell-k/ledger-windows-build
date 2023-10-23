@@ -190,7 +190,7 @@ if (!(Check)) {
 if (!$env:BOOST_SKIP) {
 
   $env:boost_version_major = 1
-  $env:boost_version_minor = 72
+  $env:boost_version_minor = 83
   $env:boost_version_patch = 0
 
   $env:boost_version_dot = "$($env:boost_version_major).$($env:boost_version_minor).$($env:boost_version_patch)"
@@ -235,7 +235,7 @@ if (!$env:BOOST_SKIP) {
 
 "Building mpir..." | Write-Host
 Push-Location
-cd mpir\msvc\vs19
+cd mpir\msvc\vs22
 msbuild.exe /p:Platform=win32 /p:Configuration=Release .\lib_mpir_gc\lib_mpir_gc.vcxproj
 msbuild.exe /p:Platform=win32 /p:Configuration=Release .\lib_mpir_cxx\lib_mpir_cxx.vcxproj
 Pop-Location
@@ -243,7 +243,7 @@ Pop-Location
 
 "Building mpfr..." | Write-Host
 Push-Location
-cd mpfr\build.vs19\lib_mpfr
+cd mpfr\build.vs22\lib_mpfr
 msbuild /p:Configuration=Release lib_mpfr.vcxproj
 Pop-Location
 
@@ -257,7 +257,7 @@ $ErrorActionPreference = "Continue"
 cmake `
   '-DCMAKE_BUILD_TYPE:STRING=Release' `
   '-DBUILD_LIBRARY=OFF' `
-  '-DMPFR_LIB:FILEPATH=../../mpfr/build.vs19/lib/Win32/Release/mpfr' `
+  '-DMPFR_LIB:FILEPATH=../../mpfr/build.vs22/lib/Win32/Release/mpfr' `
   '-DGMP_LIB:FILEPATH=../../mpir/lib/win32/Release/mpir' `
   '-DMPFR_PATH:PATH=../mpfr/lib/Win32/Release' `
   '-DGMP_PATH:PATH=../mpir/lib/win32/Release' `
@@ -271,7 +271,7 @@ cmake `
   '-DBoost_USE_STATIC_RUNTIME:BOOL=1' `
   '-DCMAKE_CXX_FLAGS_RELEASE:STRING=/MT /Zi /Ob0 /Od' `
   -A Win32 `
-  -G "Visual Studio 16"
+  -G "Visual Studio 17"
 $ErrorActionPreference = "Stop"
 msbuild /p:Configuration=Release src\ledger.vcxproj
 Pop-Location

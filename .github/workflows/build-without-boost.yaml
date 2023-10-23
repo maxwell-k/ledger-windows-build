@@ -13,9 +13,9 @@ jobs:
       run: |
         "::set-output name=TAG::$($env:GITHUB_REF.replace('refs/tags/',''))"
     - name: "Add msbuild to PATH"
-      uses: microsoft/setup-msbuild@v1.0.0
+      uses: microsoft/setup-msbuild@v1.1
     - name: "Checkout sources"
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: "Checkout submodules"
       shell: powershell
       run: |
@@ -23,16 +23,12 @@ jobs:
     - name: "Compile mpir"
       shell: powershell
       run: |
-        cd mpir\msvc\vs19
-        # It appears that the build script is subtly broken. The next three lines are to compensate
-        $env:vsw_exe="`"$(${env:ProgramFiles(x86)})\Microsoft Visual Studio\Installer\vswhere.exe`""
-        $env:InstallDir="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"
-        $env:msbuild_subdir="Current"
+        cd mpir\msvc\vs22
         .\msbuild.bat gc LIB Win32 Release
     - name: "Compile mpfr"
       shell: powershell
       run: |
-        cd mpfr\build.vs19\lib_mpfr
+        cd mpfr\build.vs22\lib_mpfr
         msbuild /p:Configuration=Release lib_mpfr.vcxproj
     - name: "Compile ledger"
       shell: powershell
@@ -41,7 +37,7 @@ jobs:
         cmd /c cmake `
           -DCMAKE_BUILD_TYPE:STRING="Release" `
           -DBUILD_LIBRARY=OFF `
-          -DMPFR_LIB:FILEPATH="../../mpfr/build.vs19/lib/Win32/Release/mpfr" `
+          -DMPFR_LIB:FILEPATH="../../mpfr/build.vs22/lib/Win32/Release/mpfr" `
           -DGMP_LIB:FILEPATH="../../mpir/lib/win32/Release/mpir" `
           -DMPFR_PATH:PATH="../mpfr/lib/Win32/Release" `
           -DGMP_PATH:PATH="../mpir/lib/win32/Release" `
@@ -54,10 +50,10 @@ jobs:
           -DBoost_USE_STATIC_RUNTIME:BOOL="1" `
           -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /Zi /Ob0 /Od" `
           -A Win32 `
-          -G "Visual Studio 16"
+          -G "Visual Studio 17"
         msbuild /p:Configuration=Release src\ledger.vcxproj
     - name: "Upload artifact"
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: ledger
         path: ledger\Release
@@ -66,21 +62,6 @@ jobs:
       run: |
         7z a ledger.zip .\ledger\Release\ledger.exe
     - name: "Create Release"
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ steps.get_tag.outputs.TAG }}
-        release_name: Release ${{ steps.get_tag.outputs.TAG }}
-        draft: false
-        prerelease: false
-    - name: "Upload Release Asset"
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./ledger.zip
-        asset_name: ledger.zip
-        asset_content_type: application/zip
+        files: ledger-${{ steps.get_tag.outputs.TAG }}.zip

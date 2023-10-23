@@ -18,9 +18,9 @@ jobs:
     #    echo "BOOST_SKIP=True" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
     #    echo "BOOST_ROOT=$env:BOOST_ROOT_1_72_0" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
     - name: "Add msbuild to PATH"
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.1
     - name: "Checkout sources"
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: "Checkout submodules"
       shell: powershell
       run: |
@@ -30,7 +30,7 @@ jobs:
       run: |
         .\build.ps1
     - name: "Upload artifact"
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: ledger
         path: ledger\Release
@@ -41,21 +41,6 @@ jobs:
       env:
         TAG: ${{ steps.get_tag.outputs.TAG }}
     - name: "Create Release"
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ steps.get_tag.outputs.TAG }}
-        release_name: Release ${{ steps.get_tag.outputs.TAG }}
-        draft: false
-        prerelease: false
-    - name: "Upload Release Asset"
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./ledger-${{ steps.get_tag.outputs.TAG }}.zip
-        asset_name: ledger-${{ steps.get_tag.outputs.TAG }}.zip
-        asset_content_type: application/zip
+        files: ledger-${{ steps.get_tag.outputs.TAG }}.zip

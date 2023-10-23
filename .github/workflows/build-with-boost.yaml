@@ -8,12 +8,12 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: "Add msbuild to PATH"
-      uses: microsoft/setup-msbuild@v1.0.0
+      uses: microsoft/setup-msbuild@v1.1
     - name: "Set Target Boost Version"
       shell: powershell
       run: |
         Write-Output "::set-env name=boost_version_major::1"
-        Write-Output "::set-env name=boost_version_minor::72"
+        Write-Output "::set-env name=boost_version_minor::83"
         Write-Output "::set-env name=boost_version_patch::0"
     - name: "Transform Target Boost Version"
       shell: powershell
@@ -21,7 +21,7 @@ jobs:
         Write-Output "::set-env name=boost_version_dot::$($env:boost_version_major).$($env:boost_version_minor).$($env:boost_version_patch)"
         Write-Output "::set-env name=boost_version_underscore::$($env:boost_version_major)_$($env:boost_version_minor)_$($env:boost_version_patch)"
     - name: "Checkout sources"
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: "Checkout submodules"
       shell: powershell
       run: |
@@ -48,15 +48,12 @@ jobs:
     - name: "Compile mpir"
       shell: powershell
       run: |
-        cd mpir\msvc\vs19
-        $env:vsw_exe="`"$(${env:ProgramFiles(x86)})\Microsoft Visual Studio\Installer\vswhere.exe`""
-        $env:InstallDir="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"
-        $env:msbuild_subdir="Current"
+        cd mpir\msvc\vs22
         .\msbuild.bat gc LIB Win32 Release
     - name: "Compile mpfr"
       shell: powershell
       run: |
-        cd mpfr\build.vs19\lib_mpfr
+        cd mpfr\build.vs22\lib_mpfr
         msbuild /p:Configuration=Release lib_mpfr.vcxproj
     - name: "Compile ledger"
       shell: powershell
@@ -65,7 +62,7 @@ jobs:
         cmd /c cmake `
           -DCMAKE_BUILD_TYPE:STRING="Release" `
           -DBUILD_LIBRARY=OFF `
-          -DMPFR_LIB:FILEPATH="../../mpfr/build.vs19/lib/Win32/Release/mpfr" `
+          -DMPFR_LIB:FILEPATH="../../mpfr/build.vs22/lib/Win32/Release/mpfr" `
           -DGMP_LIB:FILEPATH="../../mpir/lib/win32/Release/mpir" `
           -DMPFR_PATH:PATH="../mpfr/lib/Win32/Release" `
           -DGMP_PATH:PATH="../mpir/lib/win32/Release" `
@@ -79,10 +76,10 @@ jobs:
           -DBoost_USE_STATIC_LIBS:BOOL="1" `
           -DCMAKE_CXX_FLAGS_RELEASE:STRING="/MT /Zi /Ob0 /Od" `
           -A Win32 `
-          -G "Visual Studio 16"
+          -G "Visual Studio 17"
         msbuild /p:Configuration=Release src\ledger.vcxproj
     - name: "Upload artifact"
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: ledger
         path: ledger\Release
