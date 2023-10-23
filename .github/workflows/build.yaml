@@ -12,6 +12,10 @@ jobs:
       id: get_tag
       run: |
         "::set-output name=TAG::$($env:GITHUB_REF.replace('refs/tags/',''))"
+    - name: Show environment variables
+      shell: powershell
+      run: |
+        Get-ChildItem env:
     #- name: Skip boost download
     #  shell: powershell
     #  run: |
